@@ -699,3 +699,147 @@ module.exports = {
 
 在main.js中删除相应的Import
 
+
+
+# 32 vue兼容性
+
+vue支持所有兼容ECMAScript5的浏览器，因IE8不支持ECMAScript5特性，故IE8及其以下浏览器均不支持vue。只要浏览器支持Object.defineProperty方法， vue 就能运行起来，但是该方法在IE8 以下的没有这个方法，所以支持不了。
+
+## 32.1 3s延时触发
+
+解决移动端某些版本的浏览器，点击事件有3s延时触发的问题
+
+### 32.1.1 安装依赖
+
+```
+npm install fastclick --save-dev
+```
+
+## 1.2 绑定body
+
+ 在Vue项目的Main.js中将 fastclick 绑定到 body 即可
+
+```
+import fastClick from 'fastclick'
+fastClick.attach(document.body)
+```
+
+# 2，不支持 promise
+
+解决部分低版本安卓浏览器不支持 promise的问题（还有部分白屏的需要打包编译即可解决）
+
+## 2.1 安装依赖包
+
+```
+npm install babel-polyfill --save
+```
+
+## 2.2 引用依赖包
+
+在 vue 项目的 mian.js 中引用即可
+
+```
+import 'babel-polyfill'
+```
+
+# 3，清除 css 初始样式
+
+## 3.1 新建reset.css文件
+
+```
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, input {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-weight: normal;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* custom */
+a {
+    color: #7e8c8d;
+    text-decoration: none;
+    -webkit-backface-visibility: hidden;
+}
+
+li {
+    list-style: none;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    height: 5px;
+    background-color: rgba(125, 125, 125, 0.7);
+    -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    width: 5px;
+    background-color: rgba(125, 125, 125, 0.7);
+    -webkit-border-radius: 6px;
+}
+
+html, body {
+    width: 100%;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+```
+
+## 3.2 引入文件
+
+```
+import '@/assets/style/resrt.css'
+```
+
+# 4，history在IE9下不兼容
+
