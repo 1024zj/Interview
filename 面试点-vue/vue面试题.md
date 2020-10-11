@@ -715,7 +715,7 @@ vue支持所有兼容ECMAScript5的浏览器，因IE8不支持ECMAScript5特性�
 npm install fastclick --save-dev
 ```
 
-## 1.2 绑定body
+### 32.1.2 绑定body
 
  在Vue项目的Main.js中将 fastclick 绑定到 body 即可
 
@@ -724,27 +724,53 @@ import fastClick from 'fastclick'
 fastClick.attach(document.body)
 ```
 
-# 2，不支持 promise
+## 32.2，不支持ES6新特性
 
-解决部分低版本安卓浏览器不支持 promise的问题（还有部分白屏的需要打包编译即可解决）
+低版本的安卓对ES6新特性不支持，这里需要引入两个包来进行转化，babel-polyfill和es6-promise
 
-## 2.1 安装依赖包
+### 32.2.1 安装依赖包
 
 ```
-npm install babel-polyfill --save
+npm install babel-polyfill
+
+npm install es6-promise
 ```
 
-## 2.2 引用依赖包
+### 32.2.2 引用依赖包
 
 在 vue 项目的 mian.js 中引用即可
 
 ```
 import 'babel-polyfill'
+
+import Es6Promise from 'es6-promise'
+
+require('es6-promise').polyfill()
+
+ES6Promise.polyfill()
 ```
 
-# 3，清除 css 初始样式
+### 32.2.3  配置 
 
-## 3.1 新建reset.css文件
+在webpack.base.conf.js里配置一下
+
+```
+module.exports = { 
+
+　　entry: { 
+
+　　　　"babel-polyfill":"babel-polyfill",
+
+　　　　 app: './src/main.js'
+
+}
+```
+
+
+
+## 32.3，清除 css 初始样式
+
+### 32.3.1 新建reset.css文件
 
 ```
 html, body, div, span, applet, object, iframe,
@@ -835,11 +861,54 @@ body {
 }
 ```
 
-## 3.2 引入文件
+### 32.3.2 引入文件
 
 ```
 import '@/assets/style/resrt.css'
 ```
 
-# 4，history在IE9下不兼容
+## 32.4，history在IE9下不兼容
 
+### 32.4.1 mode:'history'
+
+​	首先mode:'history'在IE9下是不能使用的，如果是IE9，会变成hash的模式（在2项满足fallback:true条件后）
+
+### 32.4.2 fallback属性
+
+​		如果使用fallback(跟mode同一级别的属性,该属性默认为true)属性:
+
+```
+ fallback：true；当在IE9下默认变成hash
+ fallback：true；强制使用history方式,此方式对于可以手动输入url，后台不做严格要求的网站是可行的
+```
+
+32.4.3 
+
+3.有些网页不能使用输入Url的方式访问,后端也会对url做验证,这个时候不妨就让他变成hash模式,无非就是加个#的问题
+不过需要注意的是,有些a标签的herf属性设置成#就会刷新整个页面的,我对这个问题的解决办法是:
+1)删除herf属性
+2)给a标签添加CSS:cursor: pointer;
+
+## 32.5 对块级元素失效
+
+​		低版本的安卓在一个就是弹性盒对块级元素的居中属性有可能会失效，所以尽量避免用弹性盒对块状元素进行居中，用绝对定位的上下左右设0，再加margin:auto进行居中。
+
+## 32.6 边框不显示
+
+​		低版本安卓的border的边框不显示：对border设置1px或0.01rem的边框可能会消失，这个解决方法可以用2px或0.02rem代替
+
+## 32.7 逻辑像素问题
+
+​		低版本安卓的逻辑像素和物理像素， 在使用rem作为单位的时候，其单位长度会跟随系统设置的字体大小变化而变化，所以我们要使用物理像素进行rem长度的计算而不是逻辑像素。
+
+## 32.8 fixed问题
+
+​		低版本安卓尽量避免使用fixed定位，移动端对fixed定位的支持很不友好，经常会出现一些奇奇怪怪的问题，所以最好还是避免或者减少fixed的使用。
+
+## 32.9 按键问题
+
+​		移动端键盘按下的$event事件和pc端有些不同，在控制台上把事件打印出来以后会发现移动端可能会少一些属性，所以在使用键盘按下事件的时候，最好先看一下移动端有没有这个属性。
+
+## 32.10 页面自适应
+
+​		在移动端如何做页面自适应，使用弹性盒，或者高度用rem,宽度用百分比
